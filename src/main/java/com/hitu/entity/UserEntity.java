@@ -16,6 +16,7 @@ public class UserEntity {
 	private String userFirstName;
 	private String userMiddleName;
 	private String userLastName;
+	private String password;
 	private Long phoneNo;
 	private String email;
 	private String address;
