@@ -8,6 +8,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hitu.dto.UserDto;
 import com.hitu.security.JwtUtils;
 import com.hitu.service.UserService;
+
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 
 @RestController
 @RequestMapping("/api")
@@ -53,7 +57,7 @@ public class UserController {
 		return new ResponseEntity<>("Invalid Credentials", HttpStatus.BAD_REQUEST);
 	}
 	 
-	@PutMapping("/update")
+	@PutMapping
 	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto){
 		 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		 String loggedInUserEmail = userDetails.getUsername();
@@ -65,6 +69,24 @@ public class UserController {
 		return userService.verifyEmail(email);
 	}
 	
+	@PutMapping("/{userId}")
+	public ResponseEntity<UserDto> updateUser(@PathVariable Integer userId,@RequestBody UserDto userDto){
+		return new ResponseEntity<>(userService.updateUser(userId, userDto), HttpStatus.OK);
+	}
 	
+	@DeleteMapping("/{userId}")
+	public ResponseEntity<String> deleteUser(@PathVariable Integer userId){
+		return new ResponseEntity<>(userService.deleteUser(userId), HttpStatus.OK);
+	}
+	
+	@DeleteMapping
+	public ResponseEntity<String> deleteAll(){
+		return new ResponseEntity<>(userService.deleteAllUsers(), HttpStatus.OK);
+	}
+	
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserDto> getUserById(@PathVariable Integer userId) {
+		return new ResponseEntity<>(userService.getUser(userId), HttpStatus.OK);
+	}
 	
 }
